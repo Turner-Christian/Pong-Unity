@@ -7,8 +7,8 @@ public class GameManager : MonoBehaviour
     public static GameManager instance; // Singleton instance of GameManager
 
     public int scorePlayer1, scorePlayer2; // Player scores
-    public ScoreText scoreTextLeft, scoreTextRight; // References to the score text components
     public Action onReset; // Action to be invoked on reset
+    public GameUI gameUI; // Reference to the GameUI component
 
     private void Awake()
     {
@@ -34,12 +34,8 @@ public class GameManager : MonoBehaviour
         {
             scorePlayer2++; // Increment Player 2's score
         }
-        UpdateScores(); // Update the score text display
+        gameUI.UpdateScores(scorePlayer1, scorePlayer2); // Update the score text display
+        gameUI.HighlightScore(id); // Highlight the score text for the player who scored
     }
 
-    private void UpdateScores()
-    {
-        scoreTextLeft.SetScore(scorePlayer1); // Update Player 1's score text
-        scoreTextRight.SetScore(scorePlayer2); // Update Player 2's score text
-    }
 }

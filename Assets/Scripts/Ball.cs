@@ -10,8 +10,8 @@ public class Ball : MonoBehaviour
     public float speedMultiplier = 1.1f; // Speed multiplier for each bounce
 
     private void Start() {
-        InitialPush(); // Call the method to set the initial velocity of the ball
         GameManager.instance.onReset += ResetBall; // Subscribe to the reset event in GameManager
+        GameManager.instance.gameUI.onStartGame += ResetBall; // Subscribe to the start game event in GameUI
     }
 
     private void ResetBall() {
