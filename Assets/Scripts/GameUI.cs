@@ -1,10 +1,12 @@
 using UnityEngine;
+using TMPro;
 
 public class GameUI : MonoBehaviour
 {
     public ScoreText scoreTextPlayer1, scoreTextPlayer2; // References to the score text components
     public GameObject menuObject; // Reference to the menu object
     public System.Action onStartGame; // Action to be invoked when the game starts
+    public TextMeshProUGUI winText; // Reference to the win text component
 
     public void UpdateScores(int scorePlayer1, int scorePlayer2) // Method to update the scores
     {
@@ -28,5 +30,11 @@ public class GameUI : MonoBehaviour
     {
         menuObject.SetActive(false); // Hide the menu object
         onStartGame?.Invoke(); // Invoke the start game action if it's not null
+    }
+
+    public void onGameEnd(int winnerID)
+    {
+        menuObject.SetActive(true); // Show the menu object
+        winText.text = $"Player {winnerID} wins!"; // Display the winner message
     }
 }
