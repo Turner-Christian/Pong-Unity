@@ -9,7 +9,17 @@ public class GameManager : MonoBehaviour
     public int scorePlayer1, scorePlayer2; // Player scores
     public Action onReset; // Action to be invoked on reset
     public GameUI gameUI; // Reference to the GameUI component
+    public Ball ball; // Reference to the Ball component
+    public Shake screenShake; // Reference to the Shake component for screen shake effect
+    public GameAudio gameAudio; // Reference to the GameAudio component
     public int maxScore = 4; // Maximum score to win the game
+    public PlayMode playMode; // Current play mode (Player vs Player or Player vs AI)
+
+    public enum PlayMode
+    {
+        PlayerVsPlayer, // Player vs Player mode
+        PlayerVsAI // Player vs AI mode
+    }
 
     private void Awake()
     {
@@ -49,10 +59,12 @@ public class GameManager : MonoBehaviour
         if (winnerID != 0) // Check if there is a winner
         {
             gameUI.onGameEnd(winnerID); // Invoke the game end action with the winner ID
+            gameAudio.PlayWinSound(); // Play the win sound effect
         }
         else
         {
              onReset?.Invoke(); // Invoke the reset action if it's not null
+            gameAudio.PlayScoreSound(); // Play the score sound effect
         }
     }
 
@@ -61,5 +73,23 @@ public class GameManager : MonoBehaviour
         scorePlayer1 = 0; // Reset Player 1's score
         scorePlayer2 = 0; // Reset Player 2's score
         gameUI.UpdateScores(scorePlayer1, scorePlayer2); // Update the score text display
+    }
+
+    public void SwitchPlayMode()
+    {
+        switch (playMode) // Check the current play mode
+        {
+            case PlayMode.PlayerVsPlayer:
+                playMode = PlayMode.PlayerVsAI; // Switch to Player vs AI mode
+                break;
+            case PlayMode.PlayerVsAI:
+                playMode = PlayMode.PlayerVsPlayer; // Switch to Player vs Player mode
+                break;
+        }
+    }
+
+    public bool IsPlayer2AI()
+    {
+        return playMode == PlayMode.PlayerVsAI; // Check if the current play mode is Player vs AI
     }
 }

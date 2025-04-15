@@ -3,6 +3,7 @@ using UnityEngine;
 public class Ball : MonoBehaviour 
 {
     public Rigidbody2D rb2d; // Reference to the Rigidbody2D component
+    public ParticleSystem collsionParticle; // Reference to the ParticleSystem component for visual effects
     public float maxInitialAngle = 0.67f; // Maximum initial angle in radians
     public float moveSpeed = 5f; // Speed of the ball
     public float startX = 0f; // Starting X position of the ball
@@ -26,6 +27,7 @@ public class Ball : MonoBehaviour
         
         dir.y = Random.Range(-maxInitialAngle, maxInitialAngle); // Randomize the y component within the specified range
         rb2d.linearVelocity = dir * moveSpeed; // Set the initial velocity of the ball
+        EmitParticles(30); // Emit particles on collision with the wall
     }
 
     private void ResetBallPosition()
@@ -37,6 +39,7 @@ public class Ball : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision) {
         ScoreZone scoreZone = collision.GetComponent<ScoreZone>(); // Get the ScoreZone component from the collided object
+        GameManager.instance.screenShake.StartShake(0.8f, 0.05f); // Start the screen shake effect
         if(scoreZone) {
             GameManager.instance.OnScoreZoneReached(scoreZone.id); // Call the method to update the score in the GameManager
         }
@@ -46,7 +49,23 @@ public class Ball : MonoBehaviour
         Paddle paddle = other.collider.GetComponent<Paddle>(); // Get the Paddle component from the collided object
         if(paddle)
         {
+            GameManager.instance.gameAudio.PlayPaddleSound(); // Play the paddle sound effect
             rb2d.linearVelocity *= speedMultiplier; // Increase the ball's speed by the speed multiplier 
+            EmitParticles(20); // Emit particles on collision with the wall
+            GameManager.instance.screenShake.StartShake(0.3f, 0.05f); // Start the screen shake effect
         }
+
+        Wall wall = other.collider.GetComponent<Wall>(); // Get the Paddle component from the collided object
+        if(wall)
+        {
+            GameManager.instance.gameAudio.PlayWallSound(); // Play the paddle sound effect
+            EmitParticles(8); // Emit particles on collision with the wall
+            GameManager.instance.screenShake.StartShake(0.033f, 0.033f); // Start the screen shake effect
+        }
+    }
+
+    private void EmitParticles(int amount)
+    {
+        collsionParticle.Emit(amount); // Emit the specified amount of particles from the ParticleSystem
     }
 }

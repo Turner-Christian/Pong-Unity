@@ -7,6 +7,12 @@ public class GameUI : MonoBehaviour
     public GameObject menuObject; // Reference to the menu object
     public System.Action onStartGame; // Action to be invoked when the game starts
     public TextMeshProUGUI winText; // Reference to the win text component
+    public TextMeshProUGUI playModeButtonText; // Reference to the play mode text component
+
+    private void Start()
+    {
+        AdjustPlayModeButtonText(); // Adjust the play mode text display
+    }
 
     public void UpdateScores(int scorePlayer1, int scorePlayer2) // Method to update the scores
     {
@@ -36,5 +42,25 @@ public class GameUI : MonoBehaviour
     {
         menuObject.SetActive(true); // Show the menu object
         winText.text = $"Player {winnerID} wins!"; // Display the winner message
+    }
+
+    public void OnSwitchPlayModeButtonClicked()
+    {
+        GameManager.instance.SwitchPlayMode(); // Call the method to switch play mode in GameManager
+        AdjustPlayModeButtonText(); // Adjust the play mode text display
+    }
+
+
+    private void AdjustPlayModeButtonText()
+    {
+        switch (GameManager.instance.playMode) // Check the current play mode
+        {
+            case GameManager.PlayMode.PlayerVsPlayer: // Player vs Player mode
+                playModeButtonText.text = "Player vs AI"; // Set the text to switch to Player vs AI mode
+                break;
+            case GameManager.PlayMode.PlayerVsAI: // Player vs AI mode
+                playModeButtonText.text = "Player vs Player"; // Set the text to switch to Player vs Player mode
+                break;
+        }
     }
 }
